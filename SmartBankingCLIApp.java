@@ -254,7 +254,102 @@ public class SmartBankingCLIApp {
 
                 break;
 
-                
+                case WITHDRAWAL:
+                    // Account Number validation
+                    index = 0;
+                    double withdrawAmount = 0;
+                    
+                    acValidationDepo: 
+                    do {
+                        valid = true;
+                        System.out.print("Enter your account number: ");
+                        acc = SCANNER.nextLine().strip();
+
+                        if (acc.isBlank()) {
+                            System.out.printf(ERROR_MSG, "Account number cannot be empty!");
+                            valid = false;
+                            continue;
+                        }
+                        if (!(acc.startsWith("SDB-"))) {
+                            System.out.printf(ERROR_MSG, "Invalid account number!Try again.");
+                            valid = false;
+                            continue;
+                        } else {
+                            accSub = acc.substring(5);
+                            for (int i = 0; i < accSub.length(); i++) {
+                                if (!Character.isDigit(accSub.charAt(i))) {
+                                    System.out.printf(ERROR_MSG, "Invalid Account number format!");
+                                    valid = false;
+                                    continue acValidationDepo;
+                                }
+                            }
+
+                            boolean exists = false;
+                            for (int i = 0; i < accountDetails.length; i++) {
+                                if (acc.equals(accountDetails[i][0])) {
+                                    index = i;
+                                    // System.out.println(index);
+                                    exists = true;
+                                    break acValidationDepo;
+                                }
+
+                            }
+                            if (!exists) {
+                                valid = false;
+                                System.out.printf(ERROR_MSG, "Account number does not exist");
+                                continue;
+                            }
+
+                            if (!valid) {
+                                System.out.print("\n\tDo you want to try again? (Y/n)");
+                                if (!SCANNER.nextLine().strip().toUpperCase().equals("Y")) {
+                                    screen = DASHBOARD;
+                                } else {
+                                    continue mainloop;
+                                }
+                            }
+                            System.out.println();
+                            break;
+
+                        }
+                    } while (!valid);
+                    
+                    System.out.println();
+                    System.out.printf("Current Balace: Rs.%,.2f\n", currentBalance[index]);
+                    System.out.println();
+                    
+                    // withdrawal Amount Validation
+                    withdrawAmountLoop:
+                    do{
+                        valid = true;
+                        System.out.print("Withdrawal Amount: ");
+                        withdrawAmount = SCANNER.nextDouble();
+                        SCANNER.nextLine();
+                        if (currentBalance[index]<500){
+                            System.out.println("Your account balance is not valid!");
+                            valid = false;
+                            continue mainloop;           //
+                        }
+                        if (withdrawAmount<100){
+                            System.out.println("Invalid amount!Enter a value above 500");
+                            valid = false;
+                            continue withdrawAmountLoop;
+                        }
+
+                    }while(!valid);
+
+                    newBalance = currentBalance[index]-withdrawAmount;
+                    System.out.printf("\nNew Balance: Rs.%,.2f\n", newBalance);
+                    currentBalance[index] = newBalance;
+                    System.out.println();
+                    
+                    System.out.print("\tDo you want to continue (Y/n)? ");
+                    if (SCANNER.nextLine().strip().toUpperCase().equals("Y")){
+                        continue;
+                    }
+                    screen = DASHBOARD;
+
+                break;
 
                 // case TRANSFER:
 
