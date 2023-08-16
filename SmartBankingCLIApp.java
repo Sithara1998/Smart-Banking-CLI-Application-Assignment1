@@ -1,3 +1,4 @@
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class SmartBankingCLIApp{
@@ -63,14 +64,17 @@ public class SmartBankingCLIApp{
                 
                 //opening new account
                 case CREATING_ACCOUT:
-                    int id =accountCreater.length + 1; 
-                    String accountNum = String.format("SDB-%05d", id);
-                    System.out.printf("\tID: %s \n", accountNum);
-                    System.out.println();
-
+                    
                     boolean valid;
                     String name;
+                    int id;
+                    String accountNum;
                     do{
+                        id =accountCreater.length + 1; 
+                        accountNum = String.format("SDB-%05d", id);
+                        System.out.printf("\tID: %s \n", accountNum);
+                        System.out.println();
+
                         valid = true;
                         System.out.print("\tEnter your full name: ");
                         name = SCANNER.nextLine().strip();
@@ -112,11 +116,12 @@ public class SmartBankingCLIApp{
                     screen = DASHBOARD;
 
                     String[] newAccountNumber  = new String[accountNumber.length+1];
-                    String[] newAccountCreater = new String[newAccountNumber.length];
+                    String[] newAccountCreater = new String[accountCreater.length+1];
 
                     for (int i = 0; i < newAccountCreater.length; i++) {
                         newAccountNumber[i] = accountNumber[i];
                         newAccountCreater[i] = accountCreater[i];
+                        
                         
                     }
                     newAccountNumber[newAccountNumber.length - 1] = accountNum;
@@ -124,12 +129,63 @@ public class SmartBankingCLIApp{
 
                     accountCreater  =newAccountCreater;
                     accountNumber = newAccountNumber;
+                    System.out.println(Arrays.toString(accountNumber));
+                    System.out.println(Arrays.toString(accountCreater));
                     
                 break;
-                
+                case DEPOSIT:
+                    //Account Number validation
+                    int index = 0;
+                    do{
+                        valid = true;
+                        System.out.print("Enter youre account number: ");
+                        String acc = SCANNER.nextLine().strip();
 
+                        if(acc.isBlank()){
+                            System.out.printf(ERROR_MSG,"Account number cannot be empty");
+                            valid = false;
+                        }
+                        else if (!(acc.startsWith("SDB-"))){
+                            System.out.printf(ERROR_MSG,"Invalid account number!Try again.");
+                            valid = false;                       
+                        }else{
+                            acc = acc.substring(2);
+                            for (int i = 0; i < acc.length(); i++) {
+                                if (!Character.isDigit(acc.charAt(i))){
+                                    System.out.printf(ERROR_MSG, "Invalid Account number format!");
+                                    valid = false;
+                                    break;
+                                }
+
+                            }while(!valid);
+
+                            boolean exists = false;
+                            for (int i = 0; i < accountNumber.length; i++) {
+                                if (accountNumber[i].equals(acc)){
+                                    index = i;
+                                    exists =true;
+                                    break;
+                                }
+                                
+                            }
+                            if (!exists){
+                                valid = false;
+                                System.out.printf(ERROR_MSG, "Account number does not exist");
+
+                            }
+
+                            if(!valid){
+                                System.out.print("\n\tDo you want to try again? (Y/n)");
+                                if (!SCANNER.nextLine().strip().toUpperCase().equals("Y")){
+                                    screen = DASHBOARD;
+                                    continue mainloop;
+                                }
+
+                            }
+                        }
 
                     }while(!valid);
+
                 }
 
 
