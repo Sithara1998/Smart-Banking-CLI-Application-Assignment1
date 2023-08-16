@@ -1,6 +1,8 @@
 import java.util.Arrays;
 import java.util.Scanner;
 
+import javax.sound.midi.Soundbank;
+
 public class SmartBankingCLIApp {
     private static final Scanner SCANNER = new Scanner(System.in);
 
@@ -171,7 +173,8 @@ public class SmartBankingCLIApp {
                     String accSub;
                     String acc;
 
-                    acValidationDepo: do {
+                    acValidationDepo1: 
+                    do {
                         valid = true;
                         System.out.print("Enter your account number: ");
                         acc = SCANNER.nextLine().strip();
@@ -191,7 +194,7 @@ public class SmartBankingCLIApp {
                                 if (!Character.isDigit(accSub.charAt(i))) {
                                     System.out.printf(ERROR_MSG, "Invalid Account number format!");
                                     valid = false;
-                                    continue acValidationDepo;
+                                    continue acValidationDepo1;
                                 }
                             }
 
@@ -201,7 +204,7 @@ public class SmartBankingCLIApp {
                                     index = i;
                                     // System.out.println(index);
                                     exists = true;
-                                    break acValidationDepo;
+                                    break acValidationDepo1;
                                 }
 
                             }
@@ -259,7 +262,7 @@ public class SmartBankingCLIApp {
                     index = 0;
                     double withdrawAmount = 0;
                     
-                    acValidationDepo: 
+                    acValidationDepo2: 
                     do {
                         valid = true;
                         System.out.print("Enter your account number: ");
@@ -280,7 +283,7 @@ public class SmartBankingCLIApp {
                                 if (!Character.isDigit(accSub.charAt(i))) {
                                     System.out.printf(ERROR_MSG, "Invalid Account number format!");
                                     valid = false;
-                                    continue acValidationDepo;
+                                    continue acValidationDepo2;
                                 }
                             }
 
@@ -290,7 +293,7 @@ public class SmartBankingCLIApp {
                                     index = i;
                                     // System.out.println(index);
                                     exists = true;
-                                    break acValidationDepo;
+                                    break acValidationDepo2;
                                 }
 
                             }
@@ -309,6 +312,7 @@ public class SmartBankingCLIApp {
                                 }
                             }
                             System.out.println();
+                            
                             break;
 
                         }
@@ -348,14 +352,344 @@ public class SmartBankingCLIApp {
                         continue;
                     }
                     screen = DASHBOARD;
+                    break;
 
-                break;
+                case TRANSFER:
+                    // String[][] accountDetail = {
+                    //     {"SDB-00001","Sithara","50000.00"}
+                    //     ,{"SDB-00002","sadun","12000.00"}
+                    //     ,{"SDB-00003","Supun","11200.00"}};
+                    // double[] currentBalanc = {12000.0,30000.0,5000.0};
 
-                // case TRANSFER:
+                    // accountDetails = accountDetail;
+                    // currentBalance = currentBalanc;
+                    
+                    acValidationDepo3: 
+                    //From A/C validation
+                    do {
+                        index = 0;
+                        valid = true;
+                        System.out.print("Enter From A/C number: ");
+                        acc = SCANNER.nextLine().strip();
 
-                // case CHECK_BALANCE:
+                        if (acc.isBlank()) {
+                            System.out.printf(ERROR_MSG, "Account number cannot be empty!");
+                            valid = false;
+                            continue;
+                        }
+                        if (!(acc.startsWith("SDB-"))) {
+                            System.out.printf(ERROR_MSG, "Invalid account number!Try again.");
+                            valid = false;
+                            continue;
+                        } else {
+                            accSub = acc.substring(5);
+                            for (int i = 0; i < accSub.length(); i++) {
+                                if (!Character.isDigit(accSub.charAt(i))) {
+                                    System.out.printf(ERROR_MSG, "Invalid Account number format!");
+                                    valid = false;
+                                    continue acValidationDepo3;
+                                }
+                            }
 
-                // case REMOVE_ACCOUNT
+                            boolean exists = false;
+                            for (int i = 0; i < accountDetails.length; i++) {
+                                if (acc.equals(accountDetails[i][0])) {
+                                    index = i;
+                                    // System.out.println(index);
+                                    exists = true;
+                                    break acValidationDepo3;
+                                }
+
+                            }
+                            if (!exists) {
+                                valid = false;
+                                System.out.printf(ERROR_MSG, "Account number does not exist");
+                                continue;
+                            }
+
+                            if (!valid) {
+                                System.out.print("\n\tDo you want to try again? (Y/n)");
+                                if (!SCANNER.nextLine().strip().toUpperCase().equals("Y")) {
+                                    screen = DASHBOARD;
+                                } else {
+                                    continue mainloop;
+                                }
+                            }
+                            System.out.println();
+                            
+                            break;
+
+                        }
+                    } while (!valid);
+
+                    int fromAccIndex = index;
+                    String fromAccNumber = acc;
+                    System.out.println();
+                    acValidationDepo4: 
+                    // To A/C validation
+                    do { 
+                        valid = true;
+                        System.out.print("Enter To A/C number: ");
+                        acc = SCANNER.nextLine().strip();
+
+                        if (acc.equals(fromAccNumber)){
+                            System.out.printf(ERROR_MSG,"Enter another To A/C account");
+                            valid = false;
+                            continue acValidationDepo4;
+                        }
+
+                        if (acc.isBlank()) {
+                            System.out.printf(ERROR_MSG, "Account number cannot be empty!");
+                            valid = false;
+                            continue;
+                        }
+                        if (!(acc.startsWith("SDB-"))) {
+                            System.out.printf(ERROR_MSG, "Invalid account number!Try again.");
+                            valid = false;
+                            continue;
+                        } else {
+                            accSub = acc.substring(5);
+                            for (int i = 0; i < accSub.length(); i++) {
+                                if (!Character.isDigit(accSub.charAt(i))) {
+                                    System.out.printf(ERROR_MSG, "Invalid Account number format!");
+                                    valid = false;
+                                    continue acValidationDepo4;
+                                }
+                            }
+
+                            boolean exists = false;
+                            for (int i = 0; i < accountDetails.length; i++) {
+                                if (acc.equals(accountDetails[i][0])) {
+                                    index = i;
+                                    // System.out.println(index);
+                                    exists = true;
+                                    break acValidationDepo4;
+                                }
+
+                            }
+                            if (!exists) {
+                                valid = false;
+                                System.out.printf(ERROR_MSG, "Account number does not exist");
+                                continue;
+                            }
+
+                            if (!valid) {
+                                System.out.print("\n\tDo you want to try again? (Y/n)");
+                                if (!SCANNER.nextLine().strip().toUpperCase().equals("Y")) {
+                                    screen = DASHBOARD;
+                                } else {
+                                    continue mainloop;
+                                }
+                            }
+                            System.out.println();
+                            break;
+
+                        }
+                    } while (!valid);
+
+                    int toAccIndex = index;
+                    String toAccNumber = acc;
+                    System.out.println();
+
+                    // final String ACC_HOLDER = 
+                    System.out.printf("From A/C holder name: %s%s%s\n",COLOR_BLUE_BOLD,accountDetails[fromAccIndex][1],RESET);
+                    System.out.printf("From A/C balance: %sRs%,.2f%s\n",COLOR_GREEN_BOLD,currentBalance[fromAccIndex],RESET);
+                    System.out.println();
+                    System.out.printf("To A/C holder name: %s%s%s\n",COLOR_BLUE_BOLD,accountDetails[toAccIndex][1],RESET);
+                    System.out.printf("TO A/C balance: %sRs%,.2f%s\n",COLOR_GREEN_BOLD,currentBalance[toAccIndex],RESET);
+                    System.out.println();
+
+                    transferValidation:
+                    do{
+                        valid = true;
+                        if (currentBalance[fromAccIndex]<500){
+                            System.out.printf(ERROR_MSG,"Your account balnce is lesser than 500!");
+                            valid = false;
+                            screen = DASHBOARD;
+                            break;
+                        }
+                        
+                        System.out.print("Enter Amount: ");
+                        double transferAmount = SCANNER.nextDouble();
+                        SCANNER.nextLine();
+
+
+                        if (transferAmount<100){
+                            System.out.printf(ERROR_MSG,"Invalid amount! Enter a value above 100");
+                            valid = false;
+                            continue transferValidation;
+                        }else{
+                            double newFromAccBalnce = currentBalance[fromAccIndex]-transferAmount;
+                            System.out.printf("\nNew From A/C balance: %sRs%,.2f%s",COLOR_BLUE_BOLD,newFromAccBalnce,RESET);
+                            currentBalance[fromAccIndex] = newFromAccBalnce;
+
+                            System.out.println();
+
+                            double newToAccBalnce = currentBalance[toAccIndex]+transferAmount;
+                            System.out.printf("\nNew From A/C balance: %sRs%,.2f%s",COLOR_BLUE_BOLD,newToAccBalnce,RESET);
+                            currentBalance[toAccIndex] = newToAccBalnce;
+                        }
+
+                        if (!valid) {
+                                System.out.print("\n\tDo you want to continue? (Y/n)");
+                                if (!SCANNER.nextLine().strip().toUpperCase().equals("Y")) {
+                                    screen = DASHBOARD;
+                                } else {
+                                    continue mainloop;
+                                }
+                            }
+                            System.out.println();
+
+
+                    }while (!valid);
+                                       
+                case CHECK_BALANCE:
+                    index = 0;
+                    
+                    acValidationDepo2: 
+                    do {
+                        valid = true;
+                        System.out.print("Enter your account number: ");
+                        acc = SCANNER.nextLine().strip();
+
+                        if (acc.isBlank()) {
+                            System.out.printf(ERROR_MSG, "Account number cannot be empty!");
+                            valid = false;
+                            continue;
+                        }
+                        if (!(acc.startsWith("SDB-"))) {
+                            System.out.printf(ERROR_MSG, "Invalid account number!Try again.");
+                            valid = false;
+                            continue;
+                        } else {
+                            accSub = acc.substring(5);
+                            for (int i = 0; i < accSub.length(); i++) {
+                                if (!Character.isDigit(accSub.charAt(i))) {
+                                    System.out.printf(ERROR_MSG, "Invalid Account number format!");
+                                    valid = false;
+                                    continue acValidationDepo2;
+                                }
+                            }
+
+                            boolean exists = false;
+                            for (int i = 0; i < accountDetails.length; i++) {
+                                if (acc.equals(accountDetails[i][0])) {
+                                    index = i;
+                                    // System.out.println(index);
+                                    exists = true;
+                                    break acValidationDepo2;
+                                }
+
+                            }
+                            if (!exists) {
+                                valid = false;
+                                System.out.printf(ERROR_MSG, "Account number does not exist");
+                                continue;
+                            }
+
+                            if (!valid) {
+                                System.out.print("\n\tDo you want to try again? (Y/n)");
+                                if (!SCANNER.nextLine().strip().toUpperCase().equals("Y")) {
+                                    screen = DASHBOARD;
+                                } else {
+                                    continue mainloop;
+                                }
+                            }
+                            System.out.println();
+                            
+                            break;
+
+                        }
+                    } while (!valid);
+
+                    System.out.printf("A/C Holder Name: %s%s%s",COLOR_BLUE_BOLD,accountDetails[index][1],RESET);
+                    System.out.println();
+                    System.out.printf("Current A/C Balance: %sRs.%,.2f%s",COLOR_BLUE_BOLD,currentBalance[index],RESET);
+                    System.out.println();
+                    Double withdrawable  = currentBalance[index] - 500;
+                    System.out.printf("Available Balance to Withdraw: %sRs.%,.2f%s",COLOR_BLUE_BOLD,withdrawable,RESET);
+                    System.out.println();
+                    
+                    System.out.print("\n\tDo you want to try again? (Y/n)");
+                    if (!SCANNER.nextLine().strip().toUpperCase().equals("Y")) {
+                        screen = DASHBOARD;
+                    } else {
+                        continue mainloop;
+                    }
+                    break;
+
+                case REMOVE_ACCOUNT:
+                // Id validation
+                    index = 0;
+                    acValidationDepo5:
+                    do {
+                        valid = true;
+                        System.out.print("Enter your account number: ");
+                        acc = SCANNER.nextLine().strip();
+
+                        if (acc.isBlank()) {
+                            System.out.printf(ERROR_MSG, "Account number cannot be empty!");
+                            valid = false;
+                            continue;
+                        }
+                        if (!(acc.startsWith("SDB-"))) {
+                            System.out.printf(ERROR_MSG, "Invalid account number!Try again.");
+                            valid = false;
+                            continue;
+                        } else {
+                            accSub = acc.substring(5);
+                            for (int i = 0; i < accSub.length(); i++) {
+                                if (!Character.isDigit(accSub.charAt(i))) {
+                                    System.out.printf(ERROR_MSG, "Invalid Account number format!");
+                                    valid = false;
+                                    continue acValidationDepo5;
+                                }
+                            }
+
+                            boolean exists = false;
+                            for (int i = 0; i < accountDetails.length; i++) {
+                                if (acc.equals(accountDetails[i][0])) {
+                                    index = i;
+                                    // System.out.println(index);
+                                    exists = true;
+                                    break acValidationDepo5;
+                                }
+
+                            }
+                            if (!exists) {
+                                valid = false;
+                                System.out.printf(ERROR_MSG, "Account number does not exist");
+                                continue;
+                            }
+
+                            if (!valid) {
+                                System.out.print("\n\tDo you want to try again? (Y/n)");
+                                if (!SCANNER.nextLine().strip().toUpperCase().equals("Y")) {
+                                    screen = DASHBOARD;
+                                } else {
+                                    continue mainloop;
+                                }
+                            }
+                            System.out.println();
+                            
+                            break;
+
+                        }
+                    } while (!valid);
+                    System.out.printf("A/C Holder Name: %s%s%s",COLOR_BLUE_BOLD,accountDetails[index][1],RESET);
+                    System.out.println();
+                    System.out.printf("Current A/C Balance: %sRs.%,.2f%s",COLOR_BLUE_BOLD,currentBalance[index],RESET);
+                    System.out.println();
+
+                    System.out.print("\n\tAre you sure to delete (Y/n)?");
+                    if (!SCANNER.nextLine().strip().toUpperCase().equals("Y")) {
+                        screen = DASHBOARD;
+                    } else {
+                        continue mainloop;
+                    }
+                    break;
+
+
 
                 default:
                     continue;
