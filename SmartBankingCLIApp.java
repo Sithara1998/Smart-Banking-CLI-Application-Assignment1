@@ -26,8 +26,8 @@ public class SmartBankingCLIApp{
 
         String[] accountCreater = new String[0];
         String[] accountNumber = new String[0];
-        double[] intialDeposit = new double[][0];
-        double[] currentBalance = new double[][0];
+        double[] intialDeposit = new double[0];
+        double[] currentBalance = new double[0];
 
         String screen = DASHBOARD;
         mainloop:
@@ -114,6 +114,8 @@ public class SmartBankingCLIApp{
 
                     accountCreater  =newAccountCreater;
                     accountNumber = newAccountNumber;
+                    // System.out.println(Arrays.toString(accountNumber));
+                    // System.out.println(Arrays.toString(accountCreater));
                     
                     do{
                         valid = true;
@@ -133,14 +135,16 @@ public class SmartBankingCLIApp{
                     
                     for (int i = 0; i < intialDeposit.length; i++) {
                         newInitialDeposit[i] = intialDeposit[i];
-                        newCurrentBalance[i] = currentBalance[i]+intialDeposit[i];
+                        newCurrentBalance[i] = intialDeposit[i];
                                         
                     }
                     newInitialDeposit[newInitialDeposit.length - 1] = initDepo;
-                    newCurrentBalance[newAccountCreater.length-1] = ;
+                    newCurrentBalance[newAccountCreater.length-1] = initDepo;
 
                     intialDeposit  = newInitialDeposit;
+                    // System.out.println(Arrays.toString(intialDeposit));
                     currentBalance = newCurrentBalance;
+                    // System.out.println(Arrays.toString(currentBalance));
 
 
                     System.out.println();
@@ -156,6 +160,7 @@ public class SmartBankingCLIApp{
                     //Account Number validation
                     int index = 0;
                     double currentBal = 0;
+                    String accSub;
                     do{
                         valid = true;
                         System.out.print("Enter youre account number: ");
@@ -165,13 +170,13 @@ public class SmartBankingCLIApp{
                             System.out.printf(ERROR_MSG,"Account number cannot be empty");
                             valid = false;
                         }
-                        else if (!(acc.startsWith("SDB-"))){
+                        if (!(acc.startsWith("SDB-"))){
                             System.out.printf(ERROR_MSG,"Invalid account number!Try again.");
                             valid = false;                       
                         }else{
-                            acc = acc.substring(4);
-                            for (int i = 0; i < acc.length(); i++) {
-                                if (!Character.isDigit(acc.charAt(i))){
+                            accSub = acc.substring(5);
+                            for (int i = 0; i < accSub.length(); i++) {
+                                if (!Character.isDigit(accSub.charAt(i))){
                                     System.out.printf(ERROR_MSG, "Invalid Account number format!");
                                     valid = false;
                                     break;
@@ -181,8 +186,9 @@ public class SmartBankingCLIApp{
 
                             boolean exists = false;
                             for (int i = 0; i < accountNumber.length; i++) {
-                                if (accountNumber[i].equals(acc)){
+                                if (acc.equals(accountNumber[i])){
                                     index = i;
+                                    // System.out.println(index);
                                     exists =true;
                                     break;
                                 }
@@ -205,8 +211,8 @@ public class SmartBankingCLIApp{
                         }
 
                     }while(!valid);
-                    System.out.println("Current Balace: ");
-                    
+                    System.out.printf("Current Balace: %s",currentBalance[index]);
+
 
                 }
 
