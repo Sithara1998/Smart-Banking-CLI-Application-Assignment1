@@ -23,10 +23,8 @@ public class SmartBankingCLIApp{
         final String ERROR_MSG = String.format("\t%s%s%s\n", COLOR_RED_BOLD, "%s", RESET);
         final String SUCCESS_MSG = String.format("\t%s%s%s\n", COLOR_GREEN_BOLD, "%s", RESET);
 
-        String[] accountCreater = new String[0];
-        String[] accountNumber = new String[0];
-        double[] intialDeposit = new double[0];
-        double[] currentBalance = new double[0];
+        String[][] accountDetails = new String[0][];
+        // double[] currentBalance = new double[0];
 
         String screen = DASHBOARD;
 
@@ -74,7 +72,7 @@ public class SmartBankingCLIApp{
                     double initDepo;
                     
                     do{
-                        id = accountCreater.length + 1; 
+                        id = accountDetails.length + 1; 
                         accountNum = String.format("SDB-%05d", id);
                         System.out.printf("\tID: %s \n", accountNum);
                         System.out.println();
@@ -100,21 +98,7 @@ public class SmartBankingCLIApp{
                             }
                         }
                     }while(!valid);
-
-                    String[] newAccountNumber  = new String[accountNumber.length+1];
-                    String[] newAccountCreater = new String[accountCreater.length+1];
-
-                    for (int i = 0; i < accountCreater.length; i++) {
-                        newAccountNumber[i]  = accountNumber[i];
-                        newAccountCreater[i] = accountCreater[i];                   
-                    }
-
-                    newAccountNumber[newAccountNumber.length - 1] = accountNum;
-                    newAccountCreater[newAccountCreater.length-1] = name;
-
-                    accountCreater  =newAccountCreater;
-                    accountNumber   =newAccountNumber;
-                    
+                   
                     do{
                         valid = true;
                         System.out.println();
@@ -128,23 +112,18 @@ public class SmartBankingCLIApp{
                         }
                     }while(!valid);
 
-                    double[] newInitialDeposit = new double[intialDeposit.length+1];
-                    double[] newCurrentBalance = new double[currentBalance.length+1];
-                    
-                    for (int i = 0; i < intialDeposit.length; i++) {
-                        newInitialDeposit[i] = intialDeposit[i];
-                        newCurrentBalance[i] = intialDeposit[i];
-                                        
+                    String[][] tempAccoutDetail = new String[accountDetails.length+1][3];
+
+                    for (int i = 0; i < accountDetails.length; i++) {
+                        tempAccoutDetail[i] = accountDetails[i];
                     }
-                    newInitialDeposit[newInitialDeposit.length - 1] = initDepo;
-                    newCurrentBalance[newAccountCreater.length-1]   = initDepo;
 
-                    intialDeposit  = newInitialDeposit;
-                    // System.out.println(Arrays.toString(intialDeposit));
-                    currentBalance = newCurrentBalance;
-                    // System.out.println(Arrays.toString(currentBalance));
+                    tempAccoutDetail[tempAccoutDetail.length-1][0] = accountNum;
+                    tempAccoutDetail[tempAccoutDetail.length-1][1] = name;
+                    tempAccoutDetail[tempAccoutDetail.length-1][2] = String.format("%.2f",initDepo);
 
-
+                    accountDetails = tempAccoutDetail;
+                                        
                     System.out.println();
                     System.out.printf(SUCCESS_MSG,String.format("\t\t%sSDB-%05d%s: %s%s%s has been created successfully!\n\n"
                                         ,COLOR_BLUE_BOLD,id,RESET,COLOR_GREEN_BOLD,name,RESET));
@@ -155,74 +134,16 @@ public class SmartBankingCLIApp{
    
                 break;
 
-                case DEPOSIT:
-                    //Account Number validation
-                    int index = 0;
-                    double currentBal = 0;
-                    String accSub;
-                    String acc;
-                    
-                    acValidationDepo:
-                    do{
-                        valid = true;
-                        System.out.print("Enter your account number: ");
-                        acc = SCANNER.nextLine().strip();
+                // case DEPOSIT:
 
-                        if(acc.isBlank()){
-                            System.out.printf(ERROR_MSG,"Account number cannot be empty!");
-                            valid  = false;
-                            continue;
-                        }
-                        if (!(acc.startsWith("SDB-"))){
-                            System.out.printf(ERROR_MSG,"Invalid account number!Try again.");
-                            valid = false;  
-                            continue;                     
-                        }else{
-                            accSub = acc.substring(5);
-                            for (int i = 0; i < accSub.length(); i++) {
-                                if (!Character.isDigit(accSub.charAt(i))){
-                                    System.out.printf(ERROR_MSG, "Invalid Account number format!");
-                                    valid = false;
-                                    continue acValidationDepo; 
-                                }
-                            }
-
-                            boolean exists = false;
-                            for (int i = 0; i < accountNumber.length; i++) {
-                                if (acc.equals(accountNumber[i])){
-                                    index = i;
-                                    // System.out.println(index);
-                                    exists =true;
-                                    break acValidationDepo;
-                                }
-                            
-                            }
-                            if (!exists){
-                                valid = false;
-                                System.out.printf(ERROR_MSG, "Account number does not exist");
-                                continue;
-                            }
-
-                            if(!valid){
-                                System.out.print("\n\tDo you want to try again? (Y/n)");
-                                if (!SCANNER.nextLine().strip().toUpperCase().equals("Y")){
-                                    screen = DASHBOARD;       
-                                }else{
-                                    continue mainloop;
-                                }    
-                            }
-                            System.out.println();
-                            break;
-                         
-                        }                                 
-                    }while(!valid);
-                    System.out.printf("Current Balace: %s",currentBalance[index]);
-                                   
-                break;
-                // case WITHDRAWAL:{
-
-                // }
+                // case WITHDRAWAL:
                 
+                // case TRANSFER:
+
+                // case CHECK_BALANCE:
+
+                // case REMOVE_ACCOUNT
+
                 default:continue;
                 }
 
